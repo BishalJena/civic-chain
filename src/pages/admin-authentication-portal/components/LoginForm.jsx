@@ -171,7 +171,7 @@ const LoginForm = ({ onLogin, isLoading, error }) => {
                 name="email"
                 value={formData.email}
                 onChange={handleInputChange}
-                placeholder="admin@civicchain.gov.in | admin@maharashtra.gov.in"
+                placeholder="admin1@gmail.com | admin2@gmail.com"
                 error={errors.email}
                 required
                 disabled={isLocked}
@@ -183,7 +183,7 @@ const LoginForm = ({ onLogin, isLoading, error }) => {
                 name="password"
                 value={formData.password}
                 onChange={handleInputChange}
-                placeholder="admin123 | stateadmin456"
+                placeholder="Admin@123 | Admin@456"
                 error={errors.password}
                 required
                 disabled={isLocked}

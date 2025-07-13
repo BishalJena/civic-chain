@@ -37,11 +37,16 @@ const WelcomeBanner = ({ user, onDismiss, isFirstTime }) => {
                 <Icon name="User" size={24} color="white" />
               </div>
               <div>
-                <h2 className="text-xl font-heading font-bold text-white">
+                <h2 className="text-xl font-heading font-bold text-white flex items-center">
                   {getCurrentGreeting()}, {getUserName()}!
+                  {user?.verification?.aadhaar && (
+                    <div className="ml-2 w-6 h-6 bg-white/20 backdrop-blur rounded-full flex items-center justify-center" title="Verified Account">
+                      <Icon name="Check" size={14} color="white" />
+                    </div>
+                  )}
                 </h2>
                 <p className="text-sm font-caption text-white/80">
-                  {user?.verification?.aadhaar ? 'Verified Account' : 'Welcome to CivicChain'}
+                  {user?.verification?.aadhaar ? '✅ Verified Account' : 'Welcome to CivicChain'}
                 </p>
               </div>
             </div>

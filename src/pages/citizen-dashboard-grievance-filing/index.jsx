@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { AnonAadhaarProvider } from "@anon-aadhaar/react";
 import AadhaarVerificationPanel from '../../components/auth/AadhaarVerificationPanel';
 import GrievanceFilingForm from './components/GrievanceFilingForm';
 import GrievanceHistoryCard from './components/GrievanceHistoryCard';
@@ -72,29 +71,15 @@ const CitizenDashboardGrievanceFiling = () => {
   ];
 
   useEffect(() => {
-    checkWalletConnection();
-    loadUserData();
-  }, []);
-
-  const checkWalletConnection = async () => {
-    if (typeof window.ethereum !== 'undefined') {
-      try {
-        const accounts = await window.ethereum.request({ method: 'eth_accounts' });
-        if (accounts.length > 0) {
-          setIsWalletConnected(true);
-          setWalletAddress(accounts[0]);
-          setGrievances(mockGrievances);
-        } else {
-          navigate('/meta-mask-authentication-registration');
-        }
-      } catch (error) {
-        console.error('Error checking wallet connection:', error);
-        navigate('/meta-mask-authentication-registration');
-      }
-    } else {
-      navigate('/meta-mask-authentication-registration');
+    // Load user data and grievances for authenticated users
+    const hasVisited = localStorage.getItem('citizenDashboardVisited');
+    if (hasVisited) {
+      setIsFirstTime(false);
+      setShowWelcome(false);
     }
-  };
+    // Load grievances
+    setGrievances(mockGrievances);
+  }, []);
 
   const loadUserData = () => {
     const hasVisited = localStorage.getItem('citizenDashboardVisited');
@@ -171,12 +156,12 @@ const CitizenDashboardGrievanceFiling = () => {
 
   const stats = calculateStats();
 
-  if (!isWalletConnected) {
+  if (!isAuthenticated() || !user) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <Icon name="Wallet" size={48} className="text-muted-foreground mx-auto mb-4" />
-          <p className="text-foreground font-body">Checking wallet connection...</p>
+          <Icon name="User" size={48} className="text-muted-foreground mx-auto mb-4" />
+          <p className="text-foreground font-body">Checking authentication...</p>
         </div>
       </div>
     );
@@ -271,23 +256,11 @@ const CitizenDashboardGrievanceFiling = () => {
                 <div className="flex items-center space-x-2">
                   <Icon name="User" size={16} />
                   <span>Profile & Security</span>
-                  {user?.verification?.aadhaar && (
+                  {user?.verification?.aadhaar ? (
                     <span className="bg-green-100 text-green-800 text-xs px-2 py-0.5 rounded-full">
                       Verified
                     </span>
-                  )}
-                </div>
-              </button>
-              <button
-                onClick={() => setActiveTab('profile')}
-                className={`py-2 px-1 border-b-2 font-body font-medium text-sm transition-government ${
-                  activeTab === 'profile' ?'border-primary text-primary' :'border-transparent text-muted-foreground hover:text-foreground hover:border-muted'
-                }`}
-              >
-                <div className="flex items-center space-x-2">
-                  <Icon name="User" size={16} />
-                  <span>Profile & Security</span>
-                  {!user?.verification?.aadhaar && (
+                  ) : (
                     <span className="bg-yellow-100 text-yellow-800 text-xs px-2 py-0.5 rounded-full">
                       Verify
                     </span>
@@ -410,7 +383,14 @@ const CitizenDashboardGrievanceFiling = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="text-sm font-medium text-muted-foreground">Full Name</label>
-                      <p className="text-foreground font-medium">{user?.profile?.fullName || 'Not provided'}</p>
+                      <div className="flex items-center">
+                        <p className="text-foreground font-medium">{user?.profile?.fullName || 'Not provided'}</p>
+                        {user?.verification?.aadhaar && (
+                          <div className="ml-2 w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center" title="Verified Account">
+                            <Icon name="Check" size={12} color="white" />
+                          </div>
+                        )}
+                      </div>
                     </div>
                     <div>
                       <label className="text-sm font-medium text-muted-foreground">Email</label>
@@ -470,9 +450,7 @@ const CitizenDashboardGrievanceFiling = () => {
                 </div>
 
                 {/* Aadhaar Verification Panel */}
-                <AnonAadhaarProvider _useTestAadhaar={true} _appName="CivicChain">
-                  <AadhaarVerificationPanel />
-                </AnonAadhaarProvider>
+                <AadhaarVerificationPanel />
 
                 {/* Account Stats */}
                 <div className="bg-card rounded-lg shadow-government border border-border p-6">

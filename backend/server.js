@@ -58,21 +58,26 @@ const userSchema = new mongoose.Schema({
   verification: {
     email: { type: Boolean, default: false },
     phone: { type: Boolean, default: false },
-    aadhaar: { type: Boolean, default: false, required: true } // Aadhaar ZKP is mandatory
+    aadhaar: { type: Boolean, default: false } // Will be set to true after ZKP verification
   },
   
-  // Aadhaar ZKP Data (mandatory for all users)
+  // Aadhaar ZKP Data (will be filled during ZKP verification step)
   aadhaarZKP: {
-    verified: { type: Boolean, default: false, required: true },
-    nullifier: { type: String, required: true, unique: true }, // Mandatory ZKP nullifier
+    verified: { type: Boolean, default: false },
+    nullifier: { 
+      type: String, 
+      sparse: true, 
+      unique: true,
+      default: undefined // Explicitly set default to undefined to avoid null conflicts
+    }, 
     verificationDate: { type: Date },
     zkProof: {
-      ageAbove18: { type: String, required: true },
-      gender: { type: String, required: true },
-      state: { type: String, required: true },
-      pincode: { type: String, required: true },
-      signalHash: { type: String, required: true },
-      timestamp: { type: String, required: true }
+      ageAbove18: { type: String },
+      gender: { type: String },
+      state: { type: String },
+      pincode: { type: String },
+      signalHash: { type: String },
+      timestamp: { type: String }
     }
   },
   
@@ -230,9 +235,8 @@ app.post('/api/auth/register', async (req, res) => {
         aadhaar: false // Will be set to true after ZKP verification
       },
       aadhaarZKP: {
-        verified: false,
-        nullifier: null, // Will be set during ZKP verification
-        verificationDate: null
+        verified: false
+        // nullifier and other fields will be set during ZKP verification step
       },
       accountStatus: 'active',
       grievanceCount: 0,

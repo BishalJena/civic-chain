@@ -3,8 +3,8 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import Icon from '../../../components/AppIcon';
 import Button from '../../../components/ui/Button';
 
-const PerformanceCharts = ({ chartData, stateName }) => {
-  const [activeChart, setActiveChart] = useState('trends');
+const PerformanceCharts = ({ chartData, stateName, colorScheme }) => {
+  const [activeChart, setActiveChart] = useState('departments'); // Default to departments to show the new colors
 
   const chartTypes = [
     { id: 'trends', label: 'Monthly Trends', icon: 'TrendingUp' },
@@ -12,7 +12,8 @@ const PerformanceCharts = ({ chartData, stateName }) => {
     { id: 'resolution', label: 'Resolution Distribution', icon: 'PieChart' }
   ];
 
-  const COLORS = ['#059669', '#D97706', '#DC2626', '#0EA5E9'];
+  // Use state-specific colors or fallback to default
+  const COLORS = colorScheme?.bars || ['#1E40AF', '#059669', '#D97706', '#DC2626', '#0EA5E9', '#8B5CF6'];
 
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
@@ -60,18 +61,18 @@ const PerformanceCharts = ({ chartData, stateName }) => {
             <Line 
               type="monotone" 
               dataKey="filed" 
-              stroke="#0EA5E9" 
+              stroke={colorScheme?.primary || '#0EA5E9'}
               strokeWidth={3}
               name="Filed"
-              dot={{ fill: '#0EA5E9', strokeWidth: 2, r: 4 }}
+              dot={{ fill: colorScheme?.primary || '#0EA5E9', strokeWidth: 2, r: 4 }}
             />
             <Line 
               type="monotone" 
               dataKey="resolved" 
-              stroke="#059669" 
+              stroke={colorScheme?.accent || '#059669'}
               strokeWidth={3}
               name="Resolved"
-              dot={{ fill: '#059669', strokeWidth: 2, r: 4 }}
+              dot={{ fill: colorScheme?.accent || '#059669', strokeWidth: 2, r: 4 }}
             />
           </LineChart>
         </ResponsiveContainer>
@@ -110,10 +111,13 @@ const PerformanceCharts = ({ chartData, stateName }) => {
             <Tooltip content={<CustomTooltip />} />
             <Bar 
               dataKey="resolutionRate" 
-              fill="#1E40AF"
               name="Resolution Rate"
               radius={[4, 4, 0, 0]}
-            />
+            >
+              {chartData.departmentComparison.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+              ))}
+            </Bar>
           </BarChart>
         </ResponsiveContainer>
       </div>

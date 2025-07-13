@@ -56,6 +56,7 @@ const Select = React.forwardRef(({
     };
 
     const handleToggle = () => {
+        console.log('Toggle clicked, disabled:', disabled, 'current isOpen:', isOpen);
         if (!disabled) {
             const newIsOpen = !isOpen;
             setIsOpen(newIsOpen);
@@ -67,6 +68,7 @@ const Select = React.forwardRef(({
     };
 
     const handleOptionSelect = (option) => {
+        console.log('Option selected:', option);
         if (multiple) {
             const newValue = value || [];
             const updatedValue = newValue.includes(option.value)
@@ -174,7 +176,7 @@ const Select = React.forwardRef(({
 
                 {/* Dropdown */}
                 {isOpen && (
-                    <div className="absolute z-50 w-full mt-1 bg-white text-black border border-border rounded-md shadow-md">
+                    <div className="absolute z-[100] w-full mt-1 bg-white text-black border border-border rounded-md shadow-md">
                         {searchable && (
                             <div className="p-2 border-b">
                                 <div className="relative">

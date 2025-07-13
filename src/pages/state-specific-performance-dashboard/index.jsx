@@ -86,88 +86,291 @@ const StateSpecificPerformanceDashboard = () => {
     }
   };
 
-  const mockDepartments = [
-    {
-      id: 'pwd',
-      name: 'Public Works Department',
-      category: 'Infrastructure',
-      icon: 'Construction',
-      totalGrievances: 8945,
-      resolutionRate: 87.5,
-      avgResolutionTime: 8.5,
-      rank: 1
-    },
-    {
-      id: 'health',
-      name: 'Health & Family Welfare',
-      category: 'Healthcare',
-      icon: 'Heart',
-      totalGrievances: 7234,
-      resolutionRate: 82.3,
-      avgResolutionTime: 12.2,
-      rank: 2
-    },
-    {
-      id: 'education',
-      name: 'Education Department',
-      category: 'Education',
-      icon: 'GraduationCap',
-      totalGrievances: 6789,
-      resolutionRate: 79.8,
-      avgResolutionTime: 15.6,
-      rank: 3
-    },
-    {
-      id: 'transport',
-      name: 'Transport Department',
-      category: 'Transportation',
-      icon: 'Car',
-      totalGrievances: 5432,
-      resolutionRate: 75.4,
-      avgResolutionTime: 18.3,
-      rank: 4
-    },
-    {
-      id: 'police',
-      name: 'Police Department',
-      category: 'Law & Order',
-      icon: 'Shield',
-      totalGrievances: 4567,
-      resolutionRate: 71.2,
-      avgResolutionTime: 22.1,
-      rank: 5
-    },
-    {
-      id: 'revenue',
-      name: 'Revenue Department',
-      category: 'Administration',
-      icon: 'FileText',
-      totalGrievances: 3456,
-      resolutionRate: 68.9,
-      avgResolutionTime: 25.4,
-      rank: 6
-    },
-    {
-      id: 'water',
-      name: 'Water Resources',
-      category: 'Utilities',
-      icon: 'Droplets',
-      totalGrievances: 2890,
-      resolutionRate: 65.7,
-      avgResolutionTime: 28.7,
-      rank: 7
-    },
-    {
-      id: 'electricity',
-      name: 'Electricity Board',
-      category: 'Utilities',
-      icon: 'Zap',
-      totalGrievances: 2345,
-      resolutionRate: 62.3,
-      avgResolutionTime: 31.2,
-      rank: 8
-    }
-  ];
+  // State-specific color schemes for departments
+  const getStateColorScheme = (stateKey) => {
+    const colorSchemes = {
+      'maharashtra': {
+        primary: '#FF6B35', // Orange theme
+        bars: ['#FF6B35', '#FF8A50', '#FFA86B', '#FFC786', '#FFE5A1', '#FFF2CC'],
+        accent: '#D2571C'
+      },
+      'karnataka': {
+        primary: '#6B46C1', // Purple theme  
+        bars: ['#6B46C1', '#7C3AED', '#8B5CF6', '#A78BFA', '#C4B5FD', '#DDD6FE'],
+        accent: '#553C9A'
+      },
+      'tamil-nadu': {
+        primary: '#059669', // Green theme
+        bars: ['#059669', '#10B981', '#34D399', '#6EE7B7', '#A7F3D0', '#D1FAE5'],
+        accent: '#047857'
+      },
+      'gujarat': {
+        primary: '#DC2626', // Red theme
+        bars: ['#DC2626', '#EF4444', '#F87171', '#FCA5A5', '#FECACA', '#FEE2E2'],
+        accent: '#B91C1C'
+      }
+    };
+    
+    return colorSchemes[stateKey] || colorSchemes['maharashtra'];
+  };
+
+  // State-specific department data with varied performance for better visual distinction
+  const getDepartmentsByState = (stateKey) => {
+    const departmentData = {
+      'maharashtra': [
+        {
+          id: 'pwd',
+          name: 'Public Works Department',
+          category: 'Infrastructure',
+          icon: 'Construction',
+          totalGrievances: 8945,
+          resolutionRate: 94.2,
+          avgResolutionTime: 6.5,
+          rank: 1
+        },
+        {
+          id: 'health',
+          name: 'Health & Family Welfare',
+          category: 'Healthcare',
+          icon: 'Heart',
+          totalGrievances: 7234,
+          resolutionRate: 88.7,
+          avgResolutionTime: 9.2,
+          rank: 2
+        },
+        {
+          id: 'education',
+          name: 'Education Department',
+          category: 'Education',
+          icon: 'GraduationCap',
+          totalGrievances: 6789,
+          resolutionRate: 72.4,
+          avgResolutionTime: 15.6,
+          rank: 3
+        },
+        {
+          id: 'transport',
+          name: 'Transport Department',
+          category: 'Transportation',
+          icon: 'Car',
+          totalGrievances: 5432,
+          resolutionRate: 65.8,
+          avgResolutionTime: 22.3,
+          rank: 4
+        },
+        {
+          id: 'police',
+          name: 'Police Department',
+          category: 'Law & Order',
+          icon: 'Shield',
+          totalGrievances: 4567,
+          resolutionRate: 79.3,
+          avgResolutionTime: 12.1,
+          rank: 5
+        },
+        {
+          id: 'revenue',
+          name: 'Revenue Department',
+          category: 'Administration',
+          icon: 'FileText',
+          totalGrievances: 3456,
+          resolutionRate: 54.2,
+          avgResolutionTime: 28.4,
+          rank: 6
+        }
+      ],
+      'karnataka': [
+        {
+          id: 'pwd',
+          name: 'Public Works Department',
+          category: 'Infrastructure',
+          icon: 'Construction',
+          totalGrievances: 7845,
+          resolutionRate: 91.8,
+          avgResolutionTime: 7.2,
+          rank: 1
+        },
+        {
+          id: 'health',
+          name: 'Health & Family Welfare',
+          category: 'Healthcare',
+          icon: 'Heart',
+          totalGrievances: 6234,
+          resolutionRate: 84.5,
+          avgResolutionTime: 10.8,
+          rank: 2
+        },
+        {
+          id: 'education',
+          name: 'Education Department',
+          category: 'Education',
+          icon: 'GraduationCap',
+          totalGrievances: 5789,
+          resolutionRate: 76.9,
+          avgResolutionTime: 14.2,
+          rank: 3
+        },
+        {
+          id: 'transport',
+          name: 'Transport Department',
+          category: 'Transportation',
+          icon: 'Car',
+          totalGrievances: 4432,
+          resolutionRate: 58.7,
+          avgResolutionTime: 25.8,
+          rank: 4
+        },
+        {
+          id: 'police',
+          name: 'Police Department',
+          category: 'Law & Order',
+          icon: 'Shield',
+          totalGrievances: 3567,
+          resolutionRate: 82.4,
+          avgResolutionTime: 11.5,
+          rank: 5
+        },
+        {
+          id: 'revenue',
+          name: 'Revenue Department',
+          category: 'Administration',
+          icon: 'FileText',
+          totalGrievances: 2456,
+          resolutionRate: 48.6,
+          avgResolutionTime: 31.2,
+          rank: 6
+        }
+      ],
+      'tamil-nadu': [
+        {
+          id: 'pwd',
+          name: 'Public Works Department',
+          category: 'Infrastructure',
+          icon: 'Construction',
+          totalGrievances: 9245,
+          resolutionRate: 96.3,
+          avgResolutionTime: 5.8,
+          rank: 1
+        },
+        {
+          id: 'health',
+          name: 'Health & Family Welfare',
+          category: 'Healthcare',
+          icon: 'Heart',
+          totalGrievances: 8134,
+          resolutionRate: 92.1,
+          avgResolutionTime: 7.5,
+          rank: 2
+        },
+        {
+          id: 'education',
+          name: 'Education Department',
+          category: 'Education',
+          icon: 'GraduationCap',
+          totalGrievances: 7289,
+          resolutionRate: 85.6,
+          avgResolutionTime: 11.3,
+          rank: 3
+        },
+        {
+          id: 'transport',
+          name: 'Transport Department',
+          category: 'Transportation',
+          icon: 'Car',
+          totalGrievances: 6132,
+          resolutionRate: 71.2,
+          avgResolutionTime: 16.8,
+          rank: 4
+        },
+        {
+          id: 'police',
+          name: 'Police Department',
+          category: 'Law & Order',
+          icon: 'Shield',
+          totalGrievances: 5267,
+          resolutionRate: 87.9,
+          avgResolutionTime: 9.7,
+          rank: 5
+        },
+        {
+          id: 'revenue',
+          name: 'Revenue Department',
+          category: 'Administration',
+          icon: 'FileText',
+          totalGrievances: 4156,
+          resolutionRate: 62.8,
+          avgResolutionTime: 24.6,
+          rank: 6
+        }
+      ],
+      'gujarat': [
+        {
+          id: 'pwd',
+          name: 'Public Works Department',
+          category: 'Infrastructure',
+          icon: 'Construction',
+          totalGrievances: 8745,
+          resolutionRate: 97.8,
+          avgResolutionTime: 4.2,
+          rank: 1
+        },
+        {
+          id: 'health',
+          name: 'Health & Family Welfare',
+          category: 'Healthcare',
+          icon: 'Heart',
+          totalGrievances: 7534,
+          resolutionRate: 93.6,
+          avgResolutionTime: 6.8,
+          rank: 2
+        },
+        {
+          id: 'education',
+          name: 'Education Department',
+          category: 'Education',
+          icon: 'GraduationCap',
+          totalGrievances: 6889,
+          resolutionRate: 89.4,
+          avgResolutionTime: 8.9,
+          rank: 3
+        },
+        {
+          id: 'transport',
+          name: 'Transport Department',
+          category: 'Transportation',
+          icon: 'Car',
+          totalGrievances: 5632,
+          resolutionRate: 74.7,
+          avgResolutionTime: 13.5,
+          rank: 4
+        },
+        {
+          id: 'police',
+          name: 'Police Department',
+          category: 'Law & Order',
+          icon: 'Shield',
+          totalGrievances: 4867,
+          resolutionRate: 91.2,
+          avgResolutionTime: 7.8,
+          rank: 5
+        },
+        {
+          id: 'revenue',
+          name: 'Revenue Department',
+          category: 'Administration',
+          icon: 'FileText',
+          totalGrievances: 3756,
+          resolutionRate: 67.4,
+          avgResolutionTime: 19.8,
+          rank: 6
+        }
+      ]
+    };
+    
+    return departmentData[stateKey] || departmentData['maharashtra'];
+  };
+
+  const mockDepartments = getDepartmentsByState(selectedState);
 
   const mockChartData = {
     monthlyTrends: [
@@ -307,7 +510,11 @@ const StateSpecificPerformanceDashboard = () => {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <StateOverviewMetrics stateData={stateData} stateName={stateData.name} />
         <DepartmentPerformanceTable departments={mockDepartments} stateName={stateData.name} />
-        <PerformanceCharts chartData={mockChartData} stateName={stateData.name} />
+        <PerformanceCharts 
+          chartData={mockChartData} 
+          stateName={stateData.name}
+          colorScheme={getStateColorScheme(selectedState)}
+        />
         <PublicGrievanceBrowser 
           grievances={mockGrievances} 
           departments={mockDepartments} 

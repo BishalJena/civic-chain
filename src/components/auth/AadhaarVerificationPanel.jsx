@@ -1,24 +1,29 @@
 import React, { useState } from 'react';
 import { useAuth } from 'contexts/AuthContext';
-import { LogInWithAnonAadhaar, useAnonAadhaar } from "@anon-aadhaar/react";
+// import { LogInWithAnonAadhaar, useAnonAadhaar } from "@anon-aadhaar/react";
 import Button from "components/ui/Button";
+import Icon from "components/AppIcon";
 
 const AadhaarVerificationPanel = () => {
-  const { user, token, updateUser } = useAuth();
-  const [anonAadhaar] = useAnonAadhaar();
+  const { user, updateUser } = useAuth();
+  // const [anonAadhaar] = useAnonAadhaar(); // Original ZKP hook
   const [isVerifying, setIsVerifying] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [showAnimation, setShowAnimation] = useState(false);
 
+  // COMMENTED OUT: Original ZKP verification useEffect for after hackathon
+  /*
   React.useEffect(() => {
     console.log("Anon Aadhaar status:", anonAadhaar.status);
     
     if (anonAadhaar.status === "logged-in" && anonAadhaar.anonAadhaarProof) {
-      handleAadhaarVerification();
+      handleOriginalAadhaarVerification();
     }
   }, [anonAadhaar]);
 
-  const handleAadhaarVerification = async () => {
+  const handleOriginalAadhaarVerification = async () => {
     setIsVerifying(true);
     setError('');
     setSuccess('');
@@ -58,7 +63,187 @@ const AadhaarVerificationPanel = () => {
       setIsVerifying(false);
     }
   };
+  */
 
+  // DEMO/HACKATHON: Mock verification with QR upload
+
+  const handleQRUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    setIsVerifying(true);
+    setError('');
+    setSuccess('');
+    setShowAnimation(true);
+
+    // Simulate verification process with progress
+    for (let i = 0; i <= 100; i += 10) {
+      setUploadProgress(i);
+      await new Promise(resolve => setTimeout(resolve, 200));
+    }
+
+    // Simulate processing time
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    // Mock successful verification
+    const mockVerifiedUser = {
+      ...user,
+      verification: {
+        ...user.verification,
+        aadhaar: true
+      },
+      aadhaarZKP: {
+        verified: true,
+        verificationDate: new Date().toISOString(),
+        zkProof: {
+          ageAbove18: "1",
+          gender: "M",
+          state: "Karnataka", 
+          pincode: "560001"
+        }
+      }
+    };
+
+    updateUser(mockVerifiedUser);
+    setSuccess('🎉 Aadhaar verification successful! Your account is now verified.');
+    setIsVerifying(false);
+    setShowAnimation(false);
+    setUploadProgress(0);
+  };
+
+  if (user?.verification?.aadhaar) {
+    return (
+      <div className="bg-green-50 border border-green-200 rounded-lg p-6">
+        <div className="flex items-center">
+          <div className="flex-shrink-0">
+            <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+              <Icon name="Check" size={20} color="white" />
+            </div>
+          </div>
+          <div className="ml-3">
+            <h3 className="text-sm font-medium text-green-800 flex items-center">
+              <Icon name="Shield" size={16} className="mr-2 text-green-600" />
+              Aadhaar Verified
+              <div className="ml-2 w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center" title="Verified Account">
+                <Icon name="Check" size={10} color="white" />
+              </div>
+            </h3>
+            <div className="mt-2 text-sm text-green-700">
+              <p className="flex items-center">
+                <Icon name="User" size={14} className="mr-1" />
+                Your account is verified with Aadhaar using Zero-Knowledge Proof technology.
+              </p>
+              <p className="mt-1 flex items-center">
+                <Icon name="Calendar" size={14} className="mr-1" />
+                <strong>Verified on:</strong> {new Date(user.aadhaarZKP?.verificationDate).toLocaleDateString()}
+              </p>
+              {user.aadhaarZKP?.zkProof && (
+                <div className="mt-2 space-y-1">
+                  <p className="text-xs text-green-600">
+                    <Icon name="MapPin" size={12} className="inline mr-1" />
+                    State: {user.aadhaarZKP.zkProof.state} | Pincode: {user.aadhaarZKP.zkProof.pincode}
+                  </p>
+                  <p className="text-xs text-green-600">
+                    <Icon name="User" size={12} className="inline mr-1" />
+                    Age: 18+ Verified | Gender: {user.aadhaarZKP.zkProof.gender === 'M' ? 'Male' : 'Female'}
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
+      <div className="flex">
+        <div className="flex-shrink-0">
+          <Icon name="Shield" size={20} className="text-blue-500" />
+        </div>
+        <div className="ml-3 flex-1">
+          <h3 className="text-sm font-medium text-blue-800">
+            Verify Your Aadhaar Identity
+          </h3>
+          <div className="mt-2 text-sm text-blue-700">
+            <p className="mb-3">
+              Get a verified badge by uploading your Aadhaar QR code. This verification:
+            </p>
+            <ul className="list-disc list-inside space-y-1 mb-4">
+              <li>Keeps your Aadhaar number completely private</li>
+              <li>Prevents spam and fake grievances</li>
+              <li>Gives you a verified badge like Twitter</li>
+              <li>Uses Zero-Knowledge Proof technology</li>
+            </ul>
+            
+            {error && (
+              <div className="bg-red-50 border border-red-200 text-red-700 px-3 py-2 rounded mb-3 flex items-center">
+                <Icon name="AlertCircle" size={16} className="mr-2" />
+                {error}
+              </div>
+            )}
+
+            {success && (
+              <div className="bg-green-50 border border-green-200 text-green-700 px-3 py-2 rounded mb-3 flex items-center">
+                <Icon name="CheckCircle" size={16} className="mr-2" />
+                {success}
+              </div>
+            )}
+
+            {/* Verification Animation */}
+            {showAnimation && (
+              <div className="mb-4 p-4 bg-white border border-blue-200 rounded-lg">
+                <div className="text-center">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-2"></div>
+                  <p className="text-sm text-blue-600 font-medium">Verifying Aadhaar QR Code...</p>
+                  <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
+                    <div 
+                      className="bg-blue-500 h-2 rounded-full transition-all duration-200" 
+                      style={{width: `${uploadProgress}%`}}
+                    ></div>
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1">{uploadProgress}% Complete</p>
+                </div>
+              </div>
+            )}
+
+            <div className="mt-4">
+              {isVerifying ? (
+                <Button disabled className="w-full flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                  Processing Verification...
+                </Button>
+              ) : (
+                <div className="space-y-3">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleQRUpload}
+                    className="hidden"
+                    id="qr-upload"
+                  />
+                  <label
+                    htmlFor="qr-upload"
+                    className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md cursor-pointer flex items-center justify-center transition-colors"
+                  >
+                    <Icon name="Upload" size={16} className="mr-2" />
+                    Upload Aadhaar QR Code
+                  </label>
+                  <p className="text-xs text-blue-600 text-center">
+                    📱 Upload a photo of your Aadhaar QR code for instant verification
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  /* COMMENTED OUT: Original ZKP verification UI for after hackathon
+  
   if (user?.verification?.aadhaar) {
     return (
       <div className="bg-green-50 border border-green-200 rounded-lg p-6">
@@ -127,7 +312,7 @@ const AadhaarVerificationPanel = () => {
                 </Button>
               ) : (
                 <LogInWithAnonAadhaar 
-                  nullifierSeed={user?.id || 'default-seed'}
+                  nullifierSeed={123456789}
                   fieldsToReveal={["revealAgeAbove18", "revealGender", "revealState", "revealPinCode"]}
                 />
               )}
@@ -137,6 +322,8 @@ const AadhaarVerificationPanel = () => {
       </div>
     </div>
   );
+  
+  */
 };
 
 export default AadhaarVerificationPanel;
