@@ -41,7 +41,8 @@
     "@vitejs/plugin-react": "4.3.4",
     "autoprefixer": "10.4.2",
     "postcss": "8.4.8",
-    "tailwindcss": "3.4.6"
+    "tailwindcss": "3.4.6",
+    "vite-tsconfig-paths": "3.6.0"
   },
   "scripts": {
     "dev": "vite",
@@ -71,7 +72,6 @@
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/container-queries": "^0.1.1",
     "@tailwindcss/line-clamp": "^0.1.0",
-    "@tailwindcss/typography": "^0.5.16",
-    "vite-tsconfig-paths": "3.6.0"
+    "@tailwindcss/typography": "^0.5.16"
   }
 }
