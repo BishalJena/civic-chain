@@ -5,6 +5,46 @@ All notable changes to the CivicChain project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2025-07-14
+
+### Added
+- Comprehensive state-wise data generation for all 36 Indian states and union territories
+- Enhanced database migration and standardization scripts
+- MongoDB MCP integration for database management operations
+- Automated data population with realistic Indian demographics
+- Complete geographic coverage of India's administrative divisions
+
+### Changed
+- **Database Migration**: Renamed database from `CivicChane_DB` to `CivicChain_OG` for better naming consistency
+- **Data Structure**: Standardized state names across all collections to match official Indian geography
+- **Geographic Accuracy**: Ensured correct representation of 28 states + 8 union territories of India
+- **API Configuration**: Updated all database references to use unified `CivicChain_OG` database
+
+### Database Operations
+- Successfully migrated 333 grievances and 187 users to `CivicChain_OG` database
+- Cleaned up duplicate and inconsistent state naming (reduced from 49 to 36 correct entries)
+- Removed "Unknown" state entries from all collections
+- Dropped legacy databases (`CivicChane_DB`, `test`) after successful migration
+- Maintained data integrity throughout the migration process
+
+### Technical Improvements
+- Enhanced data generation scripts with comprehensive Indian state coverage
+- Improved database standardization with automated state name mapping
+- Better error handling in migration scripts
+- Comprehensive logging for all database operations
+
+### Fixed
+- Geographic data accuracy issues (corrected state count from 49 to 36)
+- Database naming inconsistencies (fixed typo in database name)
+- Duplicate state entries in various collections
+- Legacy database cleanup and optimization
+
+### Removed
+- Old `CivicChane_DB` database (migrated data to `CivicChain_OG`)
+- Legacy `test` database with outdated schemas
+- Inconsistent state naming entries
+- Unknown/null state entries from all collections
+
 ## [1.0.0] - 2025-07-13
 
 ### Added

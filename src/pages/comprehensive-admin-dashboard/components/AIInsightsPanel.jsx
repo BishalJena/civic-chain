@@ -131,7 +131,7 @@ const AIInsightsPanel = ({ grievances }) => {
           <div className="flex items-center justify-center pt-4 border-t border-border">
             <div className="flex items-center space-x-2 text-xs font-body text-muted-foreground">
               <Icon name="Brain" size={12} />
-              <span>Powered by OpenAI GPT-4</span>
+              <span>Powered by OpenAI gpt-4o-mini-mini</span>
             </div>
           </div>
         </div>

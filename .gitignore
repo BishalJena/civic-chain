@@ -37,6 +37,9 @@ backend/.env
 ehthumbs.db
 Thumbs.db
 
+# Build output (handled by Vercel)
+/build
+
 # Logs
 logs
 *.log

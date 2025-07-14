@@ -20,10 +20,14 @@ mongoose.connect(MONGODB_URI)
   .then(async () => {
     console.log('✅ Connected to MongoDB');
     
+    // Use the unified CivicChain_OG database
+    const db = mongoose.connection.useDb('CivicChain_OG');
+    console.log('📊 Using unified database: CivicChain_OG');
+    
     // Clean up old indexes and collections that have walletAddress
     try {
-      await mongoose.connection.db.collection('users').dropIndex('walletAddress_1').catch(() => {});
-      await mongoose.connection.db.collection('grievances').dropIndex('walletAddress_1').catch(() => {});
+      await db.collection('users').dropIndex('walletAddress_1').catch(() => {});
+      await db.collection('complaints').dropIndex('walletAddress_1').catch(() => {});
       console.log('🧹 Cleaned up old wallet-related indexes');
     } catch (error) {
       console.log('ℹ️ No old indexes to clean up or already cleaned');
@@ -127,12 +131,15 @@ const zkpUserSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Grievance Schema (Updated for ZKP users only)
+// Grievance Schema (Updated for unified CivicChain_OG structure)
 const grievanceSchema = new mongoose.Schema({
   grievanceId: { type: String, required: true, unique: true },
+  id: { type: String }, // Keep existing field for compatibility
+  
   // User identification (ZKP nullifier only)
   zkpNullifier: { type: String, required: true }, // For ZKP verified users
   userEmail: { type: String, required: true }, // Link to user email for identification
+  wallet_address: { type: String }, // Keep for compatibility
   
   // Citizen information
   citizenName: { type: String, required: true },
@@ -141,12 +148,19 @@ const grievanceSchema = new mongoose.Schema({
   citizenAddress: { type: String, required: true },
   
   // Grievance details
+  title: { type: String }, // Keep existing field
   description: { type: String, required: true },
   department: { type: String, required: true },
+  category: { type: String, required: true },
+  location: { type: String }, // Keep existing field
+  level: { type: String }, // Keep existing field
   state: { type: String, required: true },
+  assigned_body: { type: String }, // Keep existing field
+  draft_text: { type: String }, // Keep existing field
+  
   status: { 
     type: String, 
-    enum: ['raised', 'in_progress', 'resolved', 'failed'],
+    enum: ['raised', 'in_progress', 'resolved', 'failed', 'filed'], // Added 'filed' for compatibility
     default: 'raised'
   },
   priority: { 
@@ -154,11 +168,20 @@ const grievanceSchema = new mongoose.Schema({
     enum: ['low', 'medium', 'high', 'urgent'],
     default: 'medium'
   },
+  
+  // Timestamps (standardized)
   submittedAt: { type: Date, default: Date.now },
+  created_at: { type: Date },
+  updated_at: { type: Date },
+  due_date: { type: Date },
+  
+  // Blockchain data
   transactionHash: { type: String },
+  tx_hash: { type: String }, // Keep for compatibility
   blockNumber: { type: String },
   gasUsed: { type: String },
-  category: { type: String, required: true },
+  
+  // Timeline
   timeline: [{
     status: String,
     description: String,
@@ -168,10 +191,12 @@ const grievanceSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Create Models
-const User = mongoose.model('User', userSchema);
-const ZKPUser = mongoose.model('ZKPUser', zkpUserSchema);
-const Grievance = mongoose.model('Grievance', grievanceSchema);
+// Create Models (Updated for unified CivicChain_OG)
+// Force connection to use the CivicChain_OG database
+const db = mongoose.connection.useDb('CivicChain_OG');
+const User = db.model('User', userSchema, 'users');
+const ZKPUser = db.model('ZKPUser', zkpUserSchema, 'zkp_users'); // Updated collection name
+const Grievance = db.model('Grievance', grievanceSchema, 'complaints'); // Use complaints collection
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
@@ -430,6 +455,68 @@ app.get('/api/users/:email', async (req, res) => {
   }
 });
 
+// POST endpoint for creating users (for dummy data population)
+app.post('/api/users', async (req, res) => {
+  try {
+    const userData = req.body;
+    
+    // Generate a unique ID and email based on the dummy data
+    const userId = `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const email = `${userData.fullName.toLowerCase().replace(/\s+/g, '.')}@example.com`;
+    
+    // Create user with dummy password hash
+    const dummyPasswordHash = '$2a$10$dummyhashforpopulationscript1234567890';
+    
+    const newUser = new User({
+      id: userId,
+      email: email,
+      passwordHash: dummyPasswordHash,
+      profile: {
+        fullName: userData.fullName,
+        dateOfBirth: new Date(userData.dateOfBirth),
+        phone: userData.phoneNumber,
+        address: {
+          line1: userData.addressLine1,
+          line2: userData.addressLine2 || '',
+          city: userData.city,
+          state: userData.state,
+          pincode: userData.pincode
+        }
+      },
+      verification: {
+        email: userData.isVerified || false,
+        phone: userData.isVerified || false,
+        aadhaar: userData.isVerified || false
+      }
+    });
+
+    const savedUser = await newUser.save();
+    
+    res.status(201).json({
+      message: 'User created successfully',
+      user: {
+        id: savedUser.id,
+        email: savedUser.email,
+        fullName: savedUser.profile.fullName,
+        isVerified: savedUser.verification.email
+      }
+    });
+  } catch (error) {
+    console.error('Error creating user:', error);
+    if (error.code === 11000) {
+      res.status(409).json({ 
+        message: 'User already exists',
+        error: 'Duplicate user data'
+      });
+    } else {
+      res.status(500).json({ 
+        message: 'Failed to create user',
+        error: error.message
+      });
+    }
+  }
+});
+
 // ZKP Users endpoints
 app.post('/api/zkp-users', async (req, res) => {
   try {
@@ -516,7 +603,15 @@ app.post('/api/grievances', async (req, res) => {
       });
     }
 
-    const grievance = new Grievance(grievanceData);
+    // Handle dummy data format - convert walletAddress to dummy ZKP data
+    const processedGrievanceData = {
+      ...grievanceData,
+      // For dummy data, create dummy ZKP nullifier and user email
+      zkpNullifier: grievanceData.walletAddress || `dummy_nullifier_${Date.now()}`,
+      userEmail: grievanceData.citizenEmail || `${grievanceData.citizenName.toLowerCase().replace(/\s+/g, '.')}@example.com`
+    };
+
+    const grievance = new Grievance(processedGrievanceData);
     const savedGrievance = await grievance.save();
     
     res.status(201).json({
@@ -633,7 +728,7 @@ app.get('/api/stats', async (req, res) => {
       grievancesByDepartment
     ] = await Promise.all([
       User.countDocuments(),
-      Grievance.countDocuments(),
+      Grievance.countDocuments(), // This now points to the complaints collection
       Grievance.aggregate([
         { $group: { _id: '$status', count: { $sum: 1 } } }
       ]),
