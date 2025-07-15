@@ -7,7 +7,10 @@ function App() {
   return (
     <AuthProvider>
       <Routes />
-      <SpeedInsights />
+      {/* Conditionally render Speed Insights to avoid blocking errors */}
+      {process.env.NODE_ENV === 'production' && (
+        <SpeedInsights />
+      )}
     </AuthProvider>
   );
 }

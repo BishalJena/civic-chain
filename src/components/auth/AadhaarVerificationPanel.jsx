@@ -3,6 +3,7 @@ import { useAuth } from 'contexts/AuthContext';
 // import { LogInWithAnonAadhaar, useAnonAadhaar } from "@anon-aadhaar/react";
 import Button from "components/ui/Button";
 import Icon from "components/AppIcon";
+import { apiCall } from "../../utils/api";
 
 const AadhaarVerificationPanel = () => {
   const { user, updateUser } = useAuth();
@@ -39,7 +40,7 @@ const AadhaarVerificationPanel = () => {
         timestamp: anonAadhaar.anonAadhaarProof.proof.timestamp
       };
 
-      const response = await fetch('http://localhost:3001/api/auth/verify-aadhaar', {
+      const response = await apiCall('/api/auth/verify-aadhaar', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

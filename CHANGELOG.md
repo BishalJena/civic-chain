@@ -5,6 +5,34 @@ All notable changes to the CivicChain project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2025-07-15
+
+### Added
+- API utility module (`src/utils/api.js`) for centralized API calls
+- Complete authentication endpoints in Vercel serverless function (`/api/index.js`)
+  - User registration with profile data
+  - User login with JWT authentication
+  - Aadhaar verification endpoint
+- Vercel configuration improvements with API rewrites and security headers
+- Conditional Speed Insights rendering to prevent content blocker errors
+
+### Changed
+- **Frontend API Calls**: Replaced hardcoded localhost URLs with relative URLs for Vercel compatibility
+- **Authentication Flow**: Updated citizen authentication and Aadhaar verification to use new API utility
+- **Deployment Architecture**: Migrated from localhost backend dependency to Vercel serverless functions
+- **Development Workflow**: Simplified to require only `npm run dev` - no separate backend server needed
+
+### Fixed
+- **Production Deployment**: Resolved Vercel deployment errors caused by localhost API calls
+- **Speed Insights**: Fixed content blocker errors in production
+- **API Connectivity**: Eliminated "Failed to fetch" errors in deployed environment
+- **CORS Issues**: Proper handling of cross-origin requests in serverless environment
+
+### Security
+- Enhanced API error handling with proper status codes
+- Added security headers in Vercel configuration
+- JWT-based authentication with secure token handling
+
 ## [1.1.0] - 2025-07-14
 
 ### Added

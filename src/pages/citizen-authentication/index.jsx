@@ -4,6 +4,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import Button from "components/ui/Button";
 import Input from "components/ui/Input";
 import { cn } from "utils/cn";
+import { apiCall } from "../../utils/api";
 
 const CitizenAuthentication = () => {
   const navigate = useNavigate();
@@ -101,7 +102,7 @@ const CitizenAuthentication = () => {
             profile: formData.profile 
           };
 
-      const response = await fetch(`http://localhost:3001${endpoint}`, {
+      const response = await apiCall(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
