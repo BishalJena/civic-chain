@@ -21,12 +21,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Authentication Flow**: Updated citizen authentication and Aadhaar verification to use new API utility
 - **Deployment Architecture**: Migrated from localhost backend dependency to Vercel serverless functions
 - **Development Workflow**: Simplified to require only `npm run dev` - no separate backend server needed
+- **User Schema**: Updated backend schema to match frontend profile structure with complete user data
 
 ### Fixed
 - **Production Deployment**: Resolved Vercel deployment errors caused by localhost API calls
 - **Speed Insights**: Fixed content blocker errors in production
 - **API Connectivity**: Eliminated "Failed to fetch" errors in deployed environment
 - **CORS Issues**: Proper handling of cross-origin requests in serverless environment
+- **Profile Data Storage**: Fixed schema mismatch preventing profile information from being saved
+- **Profile Display**: Corrected field mapping for phone number and other profile fields
+- **Data Persistence**: Ensured complete user profile data is properly stored and retrieved
+- **Aadhaar Verification Persistence**: Fixed verification status not persisting across login/logout sessions
 
 ### Security
 - Enhanced API error handling with proper status codes

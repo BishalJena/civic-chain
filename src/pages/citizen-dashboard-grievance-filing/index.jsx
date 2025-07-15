@@ -398,7 +398,7 @@ const CitizenDashboardGrievanceFiling = () => {
                     </div>
                     <div>
                       <label className="text-sm font-medium text-muted-foreground">Phone Number</label>
-                      <p className="text-foreground font-medium">{user?.profile?.phoneNumber || 'Not provided'}</p>
+                      <p className="text-foreground font-medium">{user?.profile?.phone || 'Not provided'}</p>
                     </div>
                     <div>
                       <label className="text-sm font-medium text-muted-foreground">Gender</label>

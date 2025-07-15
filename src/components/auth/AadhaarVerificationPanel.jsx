@@ -89,10 +89,7 @@ const AadhaarVerificationPanel = () => {
     // Mock successful verification
     const mockVerifiedUser = {
       ...user,
-      verification: {
-        ...user.verification,
-        aadhaar: true
-      },
+      aadhaarVerified: true,
       aadhaarZKP: {
         verified: true,
         verificationDate: new Date().toISOString(),
@@ -112,7 +109,7 @@ const AadhaarVerificationPanel = () => {
     setUploadProgress(0);
   };
 
-  if (user?.verification?.aadhaar) {
+  if (user?.aadhaarVerified) {
     return (
       <div className="bg-green-50 border border-green-200 rounded-lg p-6">
         <div className="flex items-center">
@@ -245,7 +242,7 @@ const AadhaarVerificationPanel = () => {
 
   /* COMMENTED OUT: Original ZKP verification UI for after hackathon
   
-  if (user?.verification?.aadhaar) {
+  if (user?.aadhaarVerified) {
     return (
       <div className="bg-green-50 border border-green-200 rounded-lg p-6">
         <div className="flex items-center">

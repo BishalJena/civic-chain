@@ -47,15 +47,23 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// User Schema (simplified for demo)
+// User Schema (updated to match frontend profile structure)
 const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   profile: {
-    name: String,
+    fullName: String,
+    dateOfBirth: String,
     phone: String,
-    state: String,
-    district: String
+    address: {
+      line1: String,
+      city: String,
+      state: String,
+      pincode: String,
+      country: { type: String, default: 'India' }
+    },
+    gender: String,
+    occupation: String
   },
   aadhaarVerified: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now }
