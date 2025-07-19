@@ -382,7 +382,7 @@ This project is developed for the **Agentic Ethereum Hackathon India** by Reskil
 
 - **Reskilll & Geodework** for organizing the Agentic Ethereum Hackathon India
 - **Anon Aadhaar Team** for providing privacy-preserving ZKP infrastructure
-- **OpenAI** for gpt-4o-mini-mini API access and AI capabilities
+- **OpenAI** for gpt-4o-mini API access and AI capabilities
 - **Vercel** for hosting and serverless infrastructure
 - **MongoDB Atlas** for cloud database services
 - **Ethereum Foundation** for blockchain development resources

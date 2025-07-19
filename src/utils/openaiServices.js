@@ -8,7 +8,7 @@ import openai from './openaiClient';
 export async function suggestDepartment(grievanceText) {
   try {
     const response = await openai.chat.completions.create({
-      model: 'gpt-4o-mini-mini',
+      model: 'gpt-4o-mini',
       messages: [
         {
           role: 'system',
@@ -69,7 +69,7 @@ export async function suggestDepartment(grievanceText) {
 export async function analyzePriority(grievanceText) {
   try {
     const response = await openai.chat.completions.create({
-      model: 'gpt-4o-mini-mini',
+      model: 'gpt-4o-mini',
       messages: [
         {
           role: 'system',
@@ -133,7 +133,7 @@ export async function generateAnalyticsInsights(grievances) {
     }));
 
     const response = await openai.chat.completions.create({
-      model: 'gpt-4o-mini-mini',
+      model: 'gpt-4o-mini',
       messages: [
         {
           role: 'system',
