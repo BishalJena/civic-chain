@@ -5,6 +5,11 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
+// Load .env from parent directory if exists, else default
+const path = require('path');
+const dotenvPath = path.resolve(__dirname, '../.env');
+require('dotenv').config({ path: dotenvPath });
+
 const app = express();
 const PORT = process.env.PORT || 3001;
 

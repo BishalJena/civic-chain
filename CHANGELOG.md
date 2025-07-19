@@ -38,6 +38,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added security headers in Vercel configuration
 - JWT-based authentication with secure token handling
 
+## [1.1.1] - 2025-07-14
+
+### Fixed
+- Backend now loads environment variables from the root `.env` file if present, improving deployment flexibility.
+- Fixed OpenAI API key environment variable usage for frontend AI analysis (`VITE_OPENAI_API_KEY`).
+- Resolved issue where AI analysis for grievance filing would always use fallback method due to missing or misconfigured API key.
+
+### Changed
+- Updated backend `server.js` to support loading `.env` from both backend and root directories.
+- Clarified environment variable usage for OpenAI integration in documentation and code comments.
+
 ## [1.1.0] - 2025-07-14
 
 ### Added
